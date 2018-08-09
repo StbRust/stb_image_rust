@@ -1,0 +1,6 @@
+[submodule "Generation/Ur"]
+	path = Generation/Ur
+	url = https://github.com/rds1983/Ur.git
+[submodule "Testing/TestImages"]
+	path = Testing/TestImages
+	url = https://github.com/rds1983/DigitalRune-Images
