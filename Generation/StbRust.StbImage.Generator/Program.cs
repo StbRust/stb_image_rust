@@ -13,7 +13,7 @@ namespace StbSharp.StbImage.Generator
 		{
 			var skipFunctions = new HashSet<string>
 			{
-				"stbi__malloc",
+/*				"stbi__malloc",
 				"stbi_image_free",
 				"stbi_failure_reason",
 				"stbi__err",
@@ -22,51 +22,23 @@ namespace StbSharp.StbImage.Generator
 				"stbi__pnm_isspace",
 				"stbi__pnm_skip_whitespace",
 				"stbi__pic_is4",
-				"stbi__gif_parse_colortable"
+				"stbi__gif_parse_colortable"*/
 			};
 
 			var skipStructs = new HashSet<string>
 			{
 				"stbi_io_callbacks",
-				"img_comp",
+/*				"img_comp",
 				"stbi__jpeg",
 				"stbi__resample",
 				"stbi__gif_lzw",
-				"stbi__gif"
+				"stbi__gif"*/
 			};
 
 			var skipGlobalVariables = new HashSet<string>
 			{
 				"stbi__g_failure_reason",
-				"stbi__vertically_flip_on_load"
-			};
-
-
-			var skipClasses = new HashSet<string>
-			{
-				"stbi_io_callbacks",
-				"stbi__jpeg",
-				"stbi__resample",
-				"stbi__gif",
-				"stbi__context",
-				"stbi__png"
-			};
-
-			var globalArrays = new HashSet<string>
-			{
-						"stbi__bmask",
-						"stbi__jbias",
-						"stbi__jpeg_dezigzag",
-						"stbi__zlength_base",
-						"stbi__zlength_extra",
-						"stbi__zdist_base",
-						"stbi__zdist_extra",
-						"first_row_filter",
-						"stbi__depth_scale_table",
-						"stbi__zdefault_length",
-						"stbi__zdefault_distance",
-						"length_dezigzag",
-						"png_sig"
+//				"stbi__vertically_flip_on_load"
 			};
 
 			var parameters = new ConversionParameters
@@ -82,7 +54,6 @@ namespace StbSharp.StbImage.Generator
 						"STBI_NO_STDIO",
 						"STB_IMAGE_IMPLEMENTATION",
 					},
-				Namespace = "StbSharp",
 				AddGeneratedByUr = true
 			};
 
@@ -127,10 +98,9 @@ namespace StbSharp.StbImage.Generator
 
 			parameters.FunctionSource = n =>
 			{
-				var fc = new FunctionConfig
+				var fc = new BaseConfig
 				{
 					Name = n.Name,
-					Static = true,
 					Source = SourceFile,
 				};
 

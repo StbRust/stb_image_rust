@@ -703,8 +703,10 @@ static void stbi__start_mem(stbi__context *s, stbi_uc const *buffer, int len)
 {
    s->io.read = NULL;
    s->read_from_callbacks = 0;
-   s->img_buffer = s->img_buffer_original = (stbi_uc *) buffer;
-   s->img_buffer_end = s->img_buffer_original_end = (stbi_uc *) buffer+len;
+   s->img_buffer = (stbi_uc *)buffer;
+   s->img_buffer_original = (stbi_uc *) buffer;
+   s->img_buffer_end = (stbi_uc *)buffer + len;
+   s->img_buffer_original_end = (stbi_uc *) buffer+len;
 }
 
 // initialize a callback-based context
@@ -931,7 +933,7 @@ static void *stbi__malloc_mad4(int a, int b, int c, int d, int add)
 #endif
 
 #define stbi__errpf(x,y)   ((float *)(size_t) (stbi__err(x,y)?NULL:NULL))
-#define stbi__errpuc(x,y)  ((unsigned char *)(size_t) (stbi__err(x,y)?NULL:NULL))
+#define stbi__errpuc(x,y)  stbi__err(x,y);
 
 STBIDEF void stbi_image_free(void *retval_from_stbi_load)
 {
@@ -1648,6 +1650,23 @@ typedef struct
    int    delta[17];   // old 'firstsymbol' - old 'firstcode'
 } stbi__huffman;
 
+// definition of jpeg image component
+typedef struct
+{
+	int id;
+	int h, v;
+	int tq;
+	int hd, ha;
+	int dc_pred;
+
+	int x, y, w2, h2;
+	stbi_uc *data;
+	void *raw_data, *raw_coeff;
+	stbi_uc *linebuf;
+	short   *coeff;   // progressive only
+	int      coeff_w, coeff_h; // number of 8x8 coefficient blocks
+} img_comp;
+
 typedef struct
 {
    stbi__context *s;
@@ -1661,22 +1680,7 @@ typedef struct
    int img_mcu_x, img_mcu_y;
    int img_mcu_w, img_mcu_h;
 
-// definition of jpeg image component
-   struct
-   {
-      int id;
-      int h,v;
-      int tq;
-      int hd,ha;
-      int dc_pred;
-
-      int x,y,w2,h2;
-      stbi_uc *data;
-      void *raw_data, *raw_coeff;
-      stbi_uc *linebuf;
-      short   *coeff;   // progressive only
-      int      coeff_w, coeff_h; // number of 8x8 coefficient blocks
-   } img_comp[4];
+   img_comp img_comp[4];
 
    stbi__uint32   code_buffer; // jpeg entropy-coded buffer
    int            code_bits;   // number of valid bits
@@ -4256,7 +4260,7 @@ enum {
    STBI__F_paeth_first
 };
 
-static stbi_uc first_row_filter[5] =
+static int first_row_filter[5] =
 {
    STBI__F_none,
    STBI__F_sub,
