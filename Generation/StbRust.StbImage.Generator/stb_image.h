@@ -1039,15 +1039,15 @@ static void stbi__vertical_flip(void *image, int w, int h, int bytes_per_pixel)
    stbi_uc *bytes = (stbi_uc *)image;
 
    for (row = 0; row < (h>>1); row++) {
-      stbi_uc *row0 = bytes + row*bytes_per_row;
-      stbi_uc *row1 = bytes + (h - row - 1)*bytes_per_row;
+	  int row0 = row * bytes_per_row;
+	  int row1 = (h - row - 1)*bytes_per_row;
       // swap row0 with row1
       size_t bytes_left = bytes_per_row;
       while (bytes_left) {
          size_t bytes_copy = (bytes_left < 2048) ? bytes_left : 2048;
-         memcpy(temp, row0, bytes_copy);
-         memcpy(row0, row1, bytes_copy);
-         memcpy(row1, temp, bytes_copy);
+         memcpy(temp, bytes + row0, bytes_copy);
+         memcpy(bytes + row0, bytes + row1, bytes_copy);
+         memcpy(bytes + row1, temp, bytes_copy);
          row0 += bytes_copy;
          row1 += bytes_copy;
          bytes_left -= bytes_copy;
@@ -1488,26 +1488,26 @@ static unsigned char *stbi__convert_format(unsigned char *data, int img_n, int r
    }
 
    for (j=0; j < (int) y; ++j) {
-      unsigned char *src  = data + j * x * img_n   ;
-      unsigned char *dest = good + j * x * req_comp;
+	   int src = j * x * img_n;
+	   int dest = j * x * req_comp;
 
 	#define STBI__COMBO(a,b)  ((a)*8+(b))
 	#define STBI__CASE(a,b)   case STBI__COMBO(a,b): for(i=x-1; i >= 0; --i, src += a, dest += b)
 	  // convert source image with img_n components to one with req_comp components;
 	  // avoid switch per pixel, so use switch per scanline and massive macros
 	  switch (STBI__COMBO(img_n, req_comp)) {
-		  STBI__CASE(1, 2) { dest[0] = src[0]; dest[1] = 255; } break;
-		  STBI__CASE(1, 3) { dest[0] = dest[1] = dest[2] = src[0]; } break;
-		  STBI__CASE(1, 4) { dest[0] = dest[1] = dest[2] = src[0]; dest[3] = 255; } break;
-		  STBI__CASE(2, 1) { dest[0] = src[0]; } break;
-		  STBI__CASE(2, 3) { dest[0] = dest[1] = dest[2] = src[0]; } break;
-		  STBI__CASE(2, 4) { dest[0] = dest[1] = dest[2] = src[0]; dest[3] = src[1]; } break;
-		  STBI__CASE(3, 4) { dest[0] = src[0]; dest[1] = src[1]; dest[2] = src[2]; dest[3] = 255; } break;
-		  STBI__CASE(3, 1) { dest[0] = stbi__compute_y(src[0], src[1], src[2]); } break;
-		  STBI__CASE(3, 2) { dest[0] = stbi__compute_y(src[0], src[1], src[2]); dest[1] = 255; } break;
-		  STBI__CASE(4, 1) { dest[0] = stbi__compute_y(src[0], src[1], src[2]); } break;
-		  STBI__CASE(4, 2) { dest[0] = stbi__compute_y(src[0], src[1], src[2]); dest[1] = src[3]; } break;
-		  STBI__CASE(4, 3) { dest[0] = src[0]; dest[1] = src[1]; dest[2] = src[2]; } break;
+		  STBI__CASE(1, 2) { good[dest] = data[src]; good[dest + 1] = 255; } break;
+		  STBI__CASE(1, 3) { good[dest] = good[dest + 1] = good[dest + 2] = data[src]; } break;
+		  STBI__CASE(1, 4) { good[dest] = good[dest + 1] = good[dest + 2] = data[src]; dest[3] = 255; } break;
+		  STBI__CASE(2, 1) { good[dest] = data[src]; } break;
+		  STBI__CASE(2, 3) { good[dest] = good[dest + 1] = good[dest + 2] = data[src]; } break;
+		  STBI__CASE(2, 4) { good[dest] = good[dest + 1] = good[dest + 2] = data[src]; dest[3] = data[src + 1]; } break;
+		  STBI__CASE(3, 4) { good[dest] = data[src]; good[dest + 1] = data[src + 1]; good[dest + 2] = data[src + 2]; dest[3] = 255; } break;
+		  STBI__CASE(3, 1) { good[dest] = stbi__compute_y(data[src], data[src + 1], data[src + 2]); } break;
+		  STBI__CASE(3, 2) { good[dest] = stbi__compute_y(data[src], data[src + 1], data[src + 2]); good[dest + 1] = 255; } break;
+		  STBI__CASE(4, 1) { good[dest] = stbi__compute_y(data[src], data[src + 1], data[src + 2]); } break;
+		  STBI__CASE(4, 2) { good[dest] = stbi__compute_y(data[src], data[src + 1], data[src + 2]); good[dest + 1] = src[3]; } break;
+		  STBI__CASE(4, 3) { good[dest] = data[src]; good[dest + 1] = data[src + 1]; good[dest + 2] = data[src + 2]; } break;
 	  default: return stbi__errpuc("0", "0");
 	  }
       #undef STBI__CASE
@@ -1537,26 +1537,26 @@ static stbi__uint16 *stbi__convert_format16(stbi__uint16 *data, int img_n, int r
    }
 
    for (j=0; j < (int) y; ++j) {
-      stbi__uint16 *src  = data + j * x * img_n   ;
-      stbi__uint16 *dest = good + j * x * req_comp;
+	   int src = j * x * img_n;
+	   int dest = j * x * req_comp;
 
 	#define STBI__COMBO(a,b)  ((a)*8+(b))
 	#define STBI__CASE(a,b)   case STBI__COMBO(a,b): for(i=x-1; i >= 0; --i, src += a, dest += b)
 	  // convert source image with img_n components to one with req_comp components;
 	  // avoid switch per pixel, so use switch per scanline and massive macros
 	  switch (STBI__COMBO(img_n, req_comp)) {
-		  STBI__CASE(1, 2) { dest[0] = src[0]; dest[1] = 0xffff; } break;
-		  STBI__CASE(1, 3) { dest[0] = dest[1] = dest[2] = src[0]; } break;
-		  STBI__CASE(1, 4) { dest[0] = dest[1] = dest[2] = src[0]; dest[3] = 0xffff; } break;
-		  STBI__CASE(2, 1) { dest[0] = src[0]; } break;
-		  STBI__CASE(2, 3) { dest[0] = dest[1] = dest[2] = src[0]; } break;
-		  STBI__CASE(2, 4) { dest[0] = dest[1] = dest[2] = src[0]; dest[3] = src[1]; } break;
-		  STBI__CASE(3, 4) { dest[0] = src[0]; dest[1] = src[1]; dest[2] = src[2]; dest[3] = 0xffff; } break;
-		  STBI__CASE(3, 1) { dest[0] = stbi__compute_y_16(src[0], src[1], src[2]); } break;
-		  STBI__CASE(3, 2) { dest[0] = stbi__compute_y_16(src[0], src[1], src[2]); dest[1] = 0xffff; } break;
-		  STBI__CASE(4, 1) { dest[0] = stbi__compute_y_16(src[0], src[1], src[2]); } break;
-		  STBI__CASE(4, 2) { dest[0] = stbi__compute_y_16(src[0], src[1], src[2]); dest[1] = src[3]; } break;
-		  STBI__CASE(4, 3) { dest[0] = src[0]; dest[1] = src[1]; dest[2] = src[2]; } break;
+		  STBI__CASE(1, 2) { good[dest] = data[src]; good[dest + 1] = 0xffff; } break;
+		  STBI__CASE(1, 3) { good[dest] = good[dest + 1] = good[dest + 2] = data[src]; } break;
+		  STBI__CASE(1, 4) { good[dest] = good[dest + 1] = good[dest + 2] = data[src]; dest[3] = 0xffff; } break;
+		  STBI__CASE(2, 1) { good[dest] = data[src]; } break;
+		  STBI__CASE(2, 3) { good[dest] = good[dest + 1] = good[dest + 2] = data[src]; } break;
+		  STBI__CASE(2, 4) { good[dest] = good[dest + 1] = good[dest + 2] = data[src]; dest[3] = data[src + 1]; } break;
+		  STBI__CASE(3, 4) { good[dest] = data[src]; good[dest + 1] = data[src + 1]; good[dest + 2] = data[src + 2]; dest[3] = 0xffff; } break;
+		  STBI__CASE(3, 1) { good[dest] = stbi__compute_y_16(data[src], data[src + 1], data[src + 2]); } break;
+		  STBI__CASE(3, 2) { good[dest] = stbi__compute_y_16(data[src], data[src + 1], data[src + 2]); good[dest + 1] = 0xffff; } break;
+		  STBI__CASE(4, 1) { good[dest] = stbi__compute_y_16(data[src], data[src + 1], data[src + 2]); } break;
+		  STBI__CASE(4, 2) { good[dest] = stbi__compute_y_16(data[src], data[src + 1], data[src + 2]); good[dest + 1] = src[3]; } break;
+		  STBI__CASE(4, 3) { good[dest] = data[src]; good[dest + 1] = data[src + 1]; good[dest + 2] = data[src + 2]; } break;
 	  default: return (stbi__uint16 *)stbi__errpuc("0", "0");
 	  }
       #undef STBI__CASE

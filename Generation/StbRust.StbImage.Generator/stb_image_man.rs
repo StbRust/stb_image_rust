@@ -1,7 +1,9 @@
 ﻿static stbi__g_failure_reason: &'static str = "";
 
 pub struct stbi_io_callbacks {
-
+	read: fn(*mut u8, *mut u8, i32) -> i32,
+	skip: fn(*mut u8, i32),
+	eof: fn(*mut u8) -> i32,
 }
 
 struct stbi__resample {
@@ -15,7 +17,7 @@ ystep: i32,
 ypos: i32,
 }
 
-struct stbi__jpeg {
+/*struct stbi__jpeg {
     s: *mut stbi__context,
     huff_dc: [stbi__huffman; 4],
     huff_ac: [stbi__huffman; 4],
@@ -48,7 +50,7 @@ struct stbi__jpeg {
     /*    idct_block_kernel: &mut IntPtr,
     YCbCr_to_RGB_kernel: &mut IntPtr,
     resample_row_hv_2_kernel: &mut IntPtr,*/
-}
+}*/
 
 unsafe fn stbi__tga_test(s: *mut stbi__context) -> i32 {
 /*    let res: i32 = (i32)(0);

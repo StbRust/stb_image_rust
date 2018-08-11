@@ -10,16 +10,23 @@ struct internal_struct
 struct my_struct
 {
     data:[internal_struct;10],
-    r:i32
+    r:i32,
+    f:fn(i32) -> i32
 }
 
-fn test(ms:&mut my_struct)
+fn fff(v: i32) -> i32
 {
-    ms.data[0].a = 5;
+    return v * v;
+}
+
+unsafe fn test(ms:*mut my_struct)
+{
+    (*ms).f = fff;
+    (*ms).data[0].a = 15;
 }
 
 fn main() {
-//    let mut ms:my_struct = unsafe {std::mem::zeroed()};
+    let mut ms:my_struct = unsafe {std::mem::uninitialized()};
 /*    let ms:*mut my_struct = std::ptr::null_mut();
 
     if ms == std::ptr::null_mut()
@@ -27,8 +34,20 @@ fn main() {
 
     }*/
 
-    let mut data:[i32;10] = unsafe {std::mem::uninitialized()};
+/*    let mut d:Vec<i32> = vec![1, 2, 3, 4, 5];
+    let data:*mut i32 = d.as_mut_ptr();
 
-    data[0] = 5;
-//    println!("OUTPUT: {}", ms.data[0].a);
+    unsafe {
+        *(data.offset(3)) = 10;
+
+        println!("OUTPUT: {}", *data.offset(3));
+    }*/
+
+    unsafe {
+        test(&mut ms);
+
+        ms.data[0].a = (ms.f)(ms.data[0].a);
+
+        println!("OUTPUT: {}", ms.data[0].a);
+    }
 }

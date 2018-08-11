@@ -55,6 +55,7 @@ namespace StbSharp.StbImage.Generator
 						"STBI_NO_PNM",
 						"STBI_NO_STDIO",
 						"STB_IMAGE_IMPLEMENTATION",
+						"STBI_ONLY_PNG"
 					},
 				AddGeneratedByUr = true
 			};
@@ -127,9 +128,12 @@ namespace StbSharp.StbImage.Generator
 
 				data = Utility.ReplaceNativeCalls(data);
 
-				data = data.Replace("const __security_cookie:u64;", "");
+				data = data.Replace("const __security_cookie:u64 = std::mem::uninitialized();", "");
 				data = data.Replace("stbi__zdist_extra:[i32;32]", "stbi__zdist_extra:[i32;30]");
 				data = data.Replace(",;", "");
+				data = data.Replace("std::mem::size_of(s.buffer_start)", "s.buffer_start.len()");
+				data = data.Replace("(0) as *mut u8", "std::ptr::null_mut()");
+				data = data.Replace("\".as_mut_ptr()", "\"");
 
 				var manualData = File.ReadAllText("stb_image_man.rs");
 
