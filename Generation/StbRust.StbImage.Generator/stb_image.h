@@ -933,7 +933,7 @@ static void *stbi__malloc_mad4(int a, int b, int c, int d, int add)
 #endif
 
 #define stbi__errpf(x,y)   ((float *)(size_t) (stbi__err(x,y)?NULL:NULL))
-#define stbi__errpuc(x,y)  stbi__err(x,y);
+#define stbi__errpuc(x,y)  stbi__err(x,y)?NULL:NULL
 
 STBIDEF void stbi_image_free(void *retval_from_stbi_load)
 {
@@ -1065,7 +1065,9 @@ static unsigned char *stbi__load_and_postprocess_8bit(stbi__context *s, int *x, 
 
    if (ri.bits_per_channel != 8) {
       STBI_ASSERT(ri.bits_per_channel == 16);
-      result = stbi__convert_16_to_8((stbi__uint16 *) result, *x, *y, req_comp == 0 ? *comp : req_comp);
+	  int cmp = req_comp;
+	  if (cmp == 0) cmp = *comp;
+      result = stbi__convert_16_to_8((stbi__uint16 *) result, *x, *y, cmp);
       ri.bits_per_channel = 8;
    }
 
@@ -1089,7 +1091,9 @@ static stbi__uint16 *stbi__load_and_postprocess_16bit(stbi__context *s, int *x, 
 
    if (ri.bits_per_channel != 16) {
       STBI_ASSERT(ri.bits_per_channel == 8);
-      result = stbi__convert_8_to_16((stbi_uc *) result, *x, *y, req_comp == 0 ? *comp : req_comp);
+	  int cmp = req_comp;
+	  if (cmp == 0) cmp = *comp;
+      result = stbi__convert_8_to_16((stbi_uc *) result, *x, *y, cmp);
       ri.bits_per_channel = 16;
    }
 
@@ -1487,25 +1491,25 @@ static unsigned char *stbi__convert_format(unsigned char *data, int img_n, int r
       unsigned char *src  = data + j * x * img_n   ;
       unsigned char *dest = good + j * x * req_comp;
 
-      #define STBI__COMBO(a,b)  ((a)*8+(b))
-      #define STBI__CASE(a,b)   case STBI__COMBO(a,b): for(i=x-1; i >= 0; --i, src += a, dest += b)
-      // convert source image with img_n components to one with req_comp components;
-      // avoid switch per pixel, so use switch per scanline and massive macros
-      switch (STBI__COMBO(img_n, req_comp)) {
-         STBI__CASE(1,2) { dest[0]=src[0]; dest[1]=255;                                     } break;
-         STBI__CASE(1,3) { dest[0]=dest[1]=dest[2]=src[0];                                  } break;
-         STBI__CASE(1,4) { dest[0]=dest[1]=dest[2]=src[0]; dest[3]=255;                     } break;
-         STBI__CASE(2,1) { dest[0]=src[0];                                                  } break;
-         STBI__CASE(2,3) { dest[0]=dest[1]=dest[2]=src[0];                                  } break;
-         STBI__CASE(2,4) { dest[0]=dest[1]=dest[2]=src[0]; dest[3]=src[1];                  } break;
-         STBI__CASE(3,4) { dest[0]=src[0];dest[1]=src[1];dest[2]=src[2];dest[3]=255;        } break;
-         STBI__CASE(3,1) { dest[0]=stbi__compute_y(src[0],src[1],src[2]);                   } break;
-         STBI__CASE(3,2) { dest[0]=stbi__compute_y(src[0],src[1],src[2]); dest[1] = 255;    } break;
-         STBI__CASE(4,1) { dest[0]=stbi__compute_y(src[0],src[1],src[2]);                   } break;
-         STBI__CASE(4,2) { dest[0]=stbi__compute_y(src[0],src[1],src[2]); dest[1] = src[3]; } break;
-         STBI__CASE(4,3) { dest[0]=src[0];dest[1]=src[1];dest[2]=src[2];                    } break;
-         default: return stbi__errpuc("0", "0");
-      }
+	#define STBI__COMBO(a,b)  ((a)*8+(b))
+	#define STBI__CASE(a,b)   case STBI__COMBO(a,b): for(i=x-1; i >= 0; --i, src += a, dest += b)
+	  // convert source image with img_n components to one with req_comp components;
+	  // avoid switch per pixel, so use switch per scanline and massive macros
+	  switch (STBI__COMBO(img_n, req_comp)) {
+		  STBI__CASE(1, 2) { dest[0] = src[0]; dest[1] = 255; } break;
+		  STBI__CASE(1, 3) { dest[0] = dest[1] = dest[2] = src[0]; } break;
+		  STBI__CASE(1, 4) { dest[0] = dest[1] = dest[2] = src[0]; dest[3] = 255; } break;
+		  STBI__CASE(2, 1) { dest[0] = src[0]; } break;
+		  STBI__CASE(2, 3) { dest[0] = dest[1] = dest[2] = src[0]; } break;
+		  STBI__CASE(2, 4) { dest[0] = dest[1] = dest[2] = src[0]; dest[3] = src[1]; } break;
+		  STBI__CASE(3, 4) { dest[0] = src[0]; dest[1] = src[1]; dest[2] = src[2]; dest[3] = 255; } break;
+		  STBI__CASE(3, 1) { dest[0] = stbi__compute_y(src[0], src[1], src[2]); } break;
+		  STBI__CASE(3, 2) { dest[0] = stbi__compute_y(src[0], src[1], src[2]); dest[1] = 255; } break;
+		  STBI__CASE(4, 1) { dest[0] = stbi__compute_y(src[0], src[1], src[2]); } break;
+		  STBI__CASE(4, 2) { dest[0] = stbi__compute_y(src[0], src[1], src[2]); dest[1] = src[3]; } break;
+		  STBI__CASE(4, 3) { dest[0] = src[0]; dest[1] = src[1]; dest[2] = src[2]; } break;
+	  default: return stbi__errpuc("0", "0");
+	  }
       #undef STBI__CASE
    }
 
@@ -1536,25 +1540,25 @@ static stbi__uint16 *stbi__convert_format16(stbi__uint16 *data, int img_n, int r
       stbi__uint16 *src  = data + j * x * img_n   ;
       stbi__uint16 *dest = good + j * x * req_comp;
 
-      #define STBI__COMBO(a,b)  ((a)*8+(b))
-      #define STBI__CASE(a,b)   case STBI__COMBO(a,b): for(i=x-1; i >= 0; --i, src += a, dest += b)
-      // convert source image with img_n components to one with req_comp components;
-      // avoid switch per pixel, so use switch per scanline and massive macros
-      switch (STBI__COMBO(img_n, req_comp)) {
-         STBI__CASE(1,2) { dest[0]=src[0]; dest[1]=0xffff;                                     } break;
-         STBI__CASE(1,3) { dest[0]=dest[1]=dest[2]=src[0];                                     } break;
-         STBI__CASE(1,4) { dest[0]=dest[1]=dest[2]=src[0]; dest[3]=0xffff;                     } break;
-         STBI__CASE(2,1) { dest[0]=src[0];                                                     } break;
-         STBI__CASE(2,3) { dest[0]=dest[1]=dest[2]=src[0];                                     } break;
-         STBI__CASE(2,4) { dest[0]=dest[1]=dest[2]=src[0]; dest[3]=src[1];                     } break;
-         STBI__CASE(3,4) { dest[0]=src[0];dest[1]=src[1];dest[2]=src[2];dest[3]=0xffff;        } break;
-         STBI__CASE(3,1) { dest[0]=stbi__compute_y_16(src[0],src[1],src[2]);                   } break;
-         STBI__CASE(3,2) { dest[0]=stbi__compute_y_16(src[0],src[1],src[2]); dest[1] = 0xffff; } break;
-         STBI__CASE(4,1) { dest[0]=stbi__compute_y_16(src[0],src[1],src[2]);                   } break;
-         STBI__CASE(4,2) { dest[0]=stbi__compute_y_16(src[0],src[1],src[2]); dest[1] = src[3]; } break;
-         STBI__CASE(4,3) { dest[0]=src[0];dest[1]=src[1];dest[2]=src[2];                       } break;
-         default: return (stbi__uint16 *)stbi__errpuc("0", "0");
-      }
+	#define STBI__COMBO(a,b)  ((a)*8+(b))
+	#define STBI__CASE(a,b)   case STBI__COMBO(a,b): for(i=x-1; i >= 0; --i, src += a, dest += b)
+	  // convert source image with img_n components to one with req_comp components;
+	  // avoid switch per pixel, so use switch per scanline and massive macros
+	  switch (STBI__COMBO(img_n, req_comp)) {
+		  STBI__CASE(1, 2) { dest[0] = src[0]; dest[1] = 0xffff; } break;
+		  STBI__CASE(1, 3) { dest[0] = dest[1] = dest[2] = src[0]; } break;
+		  STBI__CASE(1, 4) { dest[0] = dest[1] = dest[2] = src[0]; dest[3] = 0xffff; } break;
+		  STBI__CASE(2, 1) { dest[0] = src[0]; } break;
+		  STBI__CASE(2, 3) { dest[0] = dest[1] = dest[2] = src[0]; } break;
+		  STBI__CASE(2, 4) { dest[0] = dest[1] = dest[2] = src[0]; dest[3] = src[1]; } break;
+		  STBI__CASE(3, 4) { dest[0] = src[0]; dest[1] = src[1]; dest[2] = src[2]; dest[3] = 0xffff; } break;
+		  STBI__CASE(3, 1) { dest[0] = stbi__compute_y_16(src[0], src[1], src[2]); } break;
+		  STBI__CASE(3, 2) { dest[0] = stbi__compute_y_16(src[0], src[1], src[2]); dest[1] = 0xffff; } break;
+		  STBI__CASE(4, 1) { dest[0] = stbi__compute_y_16(src[0], src[1], src[2]); } break;
+		  STBI__CASE(4, 2) { dest[0] = stbi__compute_y_16(src[0], src[1], src[2]); dest[1] = src[3]; } break;
+		  STBI__CASE(4, 3) { dest[0] = src[0]; dest[1] = src[1]; dest[2] = src[2]; } break;
+	  default: return (stbi__uint16 *)stbi__errpuc("0", "0");
+	  }
       #undef STBI__CASE
    }
 
@@ -5579,7 +5583,8 @@ static int stbi__psd_decode_rle(stbi__context *s, stbi_uc *p, int pixelCount)
    int count, nleft, len;
 
    count = 0;
-   while ((nleft = pixelCount - count) > 0) {
+   while ((pixelCount - count) > 0) {
+	  nleft = pixelCount - count;
       len = stbi__get8(s);
       if (len == 128) {
          // No-op.
@@ -6209,8 +6214,12 @@ static stbi_uc *stbi__process_gif_raster(stbi__context *s, stbi__gif *g)
             first = 0;
          } else if (code == clear + 1) { // end of stream code
             stbi__skip(s, len);
-            while ((len = stbi__get8(s)) > 0)
-               stbi__skip(s,len);
+			len = stbi__get8(s);
+			while (len > 0)
+			{
+				stbi__skip(s, len);
+				len = stbi__get8(s);
+			}
             return g->out;
          } else if (code <= avail) {
             if (first) return stbi__errpuc("no clear code", "Corrupt GIF");
@@ -6358,8 +6367,12 @@ static stbi_uc *stbi__gif_load_next(stbi__context *s, stbi__gif *g, int *comp, i
                   break;
                }
             }
-            while ((len = stbi__get8(s)) != 0)
-               stbi__skip(s, len);
+			len = stbi__get8(s);
+			while (len != 0)
+			{
+				stbi__skip(s, len);
+				len = stbi__get8(s);
+			}
             break;
          }
 
