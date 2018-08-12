@@ -19,7 +19,7 @@ struct stbi__resample {
 }
 
 struct stbi__jpeg {
-    s: *mut stbi__context,
+/*    s: *mut stbi__context,
     huff_dc: [stbi__huffman; 4],
     huff_ac: [stbi__huffman; 4],
     dequant: [[u16; 64]; 4],
@@ -50,7 +50,7 @@ struct stbi__jpeg {
     todo: i32,
     idct_block_kernel: unsafe fn(*mut u8, i32, *mut i16),
     YCbCr_to_RGB_kernel: unsafe fn(*mut u8, *mut u8, *mut u8, *mut u8, i32, i32),
-    resample_row_hv_2_kernel: unsafe fn(*mut u8, *mut u8, *mut u8, i32, i32)
+    resample_row_hv_2_kernel: unsafe fn(*mut u8, *mut u8, *mut u8, i32, i32)*/
 }
 
 unsafe fn stbi__tga_test(s: *mut stbi__context) -> i32 {

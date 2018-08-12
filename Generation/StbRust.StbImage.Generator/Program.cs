@@ -55,7 +55,7 @@ namespace StbSharp.StbImage.Generator
 						"STBI_NO_PNM",
 						"STBI_NO_STDIO",
 						"STB_IMAGE_IMPLEMENTATION",
-//						"STBI_NO_JPEG"
+						"STBI_ONLY_PNG"
 					},
 				AddGeneratedByUr = true
 			};
@@ -139,14 +139,12 @@ namespace StbSharp.StbImage.Generator
 				data = data.Replace("std::mem::size_of((sizes))", "sizes.len() * std::mem::size_of::<i32>()");
 				data = data.Replace("std::mem::size_of(((*z).fast))", "(*z).fast.len() * std::mem::size_of::<u16>()");
 				data = data.Replace("std::mem::size_of((codelength_sizes))", "codelength_sizes.len()");
-				data = data.Replace("std::mem::size_of((*data.offset((0) as isize)))", "std::mem::size_of::<i16> as u64");
+				data = data.Replace("std::mem::size_of((data[0])))", "std::mem::size_of::<i16> as u64");
 				data = data.Replace("\") as *mut i8", "\")");
 				data = data.Replace("if ((*s).io.read) != std::ptr::null_mut()", "if ((*s).io.read.is_some())");
 				data = data.Replace("((*s).io.read)", "((*s).io.read.unwrap())");
 				data = data.Replace("((dist) as i64)", "dist as usize");
 				data = data.Replace("(&mut raw_len) as *mut i32", "(&mut raw_len) as *mut u32");
-				data = data.Replace("(*a).s.", "(*(*a).s).");
-				data = data.Replace("(*p).s.", "(*(*p).s).");
 				data = data.Replace("result = stbi__convert_8_to_16(((result) as *mut u8), ((*x) as i32), ((*y) as i32), ((cmp) as i32))",
 					"result = stbi__convert_8_to_16(((result) as *mut u8), ((*x) as i32), ((*y) as i32), ((cmp) as i32)) as *mut u8");
 				data = data.Replace("result = stbi__convert_format16((((result) as *mut u16) as *mut u16), (((*(*p).s).img_out_n) as i32), ((req_comp) as i32), (((*(*p).s).img_x) as u32), (((*(*p).s).img_y) as u32))",
