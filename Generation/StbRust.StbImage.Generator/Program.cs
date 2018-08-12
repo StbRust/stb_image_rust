@@ -145,10 +145,10 @@ namespace StbSharp.StbImage.Generator
 				data = data.Replace("((*s).io.read)", "((*s).io.read.unwrap())");
 				data = data.Replace("((dist) as i64)", "dist as usize");
 				data = data.Replace("(&mut raw_len) as *mut i32", "(&mut raw_len) as *mut u32");
-				data = data.Replace("result = stbi__convert_8_to_16(((result) as *mut u8), ((*x) as i32), ((*y) as i32), ((cmp) as i32))",
-					"result = stbi__convert_8_to_16(((result) as *mut u8), ((*x) as i32), ((*y) as i32), ((cmp) as i32)) as *mut u8");
-				data = data.Replace("result = stbi__convert_format16((((result) as *mut u16) as *mut u16), (((*(*p).s).img_out_n) as i32), ((req_comp) as i32), (((*(*p).s).img_x) as u32), (((*(*p).s).img_y) as u32))",
-					"result = stbi__convert_format16((((result) as *mut u16) as *mut u16), (((*(*p).s).img_out_n) as i32), ((req_comp) as i32), (((*(*p).s).img_x) as u32), (((*(*p).s).img_y) as u32)) as *mut u8");
+				data = data.Replace("result = stbi__convert_8_to_16(((result) as *mut u8), *x, *y, cmp)",
+					"result = stbi__convert_8_to_16(((result) as *mut u8), *x, *y, cmp) as *mut u8");
+				data = data.Replace("result = stbi__convert_format16((((result) as *mut u16) as *mut u16), (*(*p).s).img_out_n, req_comp, (*(*p).s).img_x, (*(*p).s).img_y)",
+					"result = stbi__convert_format16((((result) as *mut u16) as *mut u16), (*(*p).s).img_out_n, req_comp, (*(*p).s).img_x, (*(*p).s).img_y) as *mut u8");
 
 				var manualData = File.ReadAllText("stb_image_man.rs");
 
