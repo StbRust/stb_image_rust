@@ -55,7 +55,7 @@ namespace StbSharp.StbImage.Generator
 						"STBI_NO_PNM",
 						"STBI_NO_STDIO",
 						"STB_IMAGE_IMPLEMENTATION",
-						"STBI_NO_JPEG"
+//						"STBI_NO_JPEG"
 					},
 				AddGeneratedByUr = true
 			};
@@ -139,6 +139,7 @@ namespace StbSharp.StbImage.Generator
 				data = data.Replace("std::mem::size_of((sizes))", "sizes.len() * std::mem::size_of::<i32>()");
 				data = data.Replace("std::mem::size_of(((*z).fast))", "(*z).fast.len() * std::mem::size_of::<u16>()");
 				data = data.Replace("std::mem::size_of((codelength_sizes))", "codelength_sizes.len()");
+				data = data.Replace("std::mem::size_of((*data.offset((0) as isize)))", "std::mem::size_of::<i16> as u64");
 				data = data.Replace("\") as *mut i8", "\")");
 				data = data.Replace("if ((*s).io.read) != std::ptr::null_mut()", "if ((*s).io.read.is_some())");
 				data = data.Replace("((*s).io.read)", "((*s).io.read.unwrap())");

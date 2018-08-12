@@ -8,17 +8,17 @@ pub struct stbi_io_callbacks {
 }
 
 struct stbi__resample {
-resample: fn(*mut u8, *mut u8, *mut u8, i32, i32) -> *mut u8,
-line0: *mut u8,
-line1: *mut u8,
-hs: i32,
-vs: i32,
-w_lores: i32,
-ystep: i32,
-ypos: i32,
+	resample: unsafe fn(*mut u8, *mut u8, *mut u8, i32, i32) -> *mut u8,
+	line0: *mut u8,
+	line1: *mut u8,
+	hs: i32,
+	vs: i32,
+	w_lores: i32,
+	ystep: i32,
+	ypos: i32,
 }
 
-/*struct stbi__jpeg {
+struct stbi__jpeg {
     s: *mut stbi__context,
     huff_dc: [stbi__huffman; 4],
     huff_ac: [stbi__huffman; 4],
@@ -48,10 +48,10 @@ ypos: i32,
     order: [i32; 4],
     restart_interval: i32,
     todo: i32,
-    /*    idct_block_kernel: &mut IntPtr,
-    YCbCr_to_RGB_kernel: &mut IntPtr,
-    resample_row_hv_2_kernel: &mut IntPtr,*/
-}*/
+    idct_block_kernel: unsafe fn(*mut u8, i32, *mut i16),
+    YCbCr_to_RGB_kernel: unsafe fn(*mut u8, *mut u8, *mut u8, *mut u8, i32, i32),
+    resample_row_hv_2_kernel: unsafe fn(*mut u8, *mut u8, *mut u8, i32, i32)
+}
 
 unsafe fn stbi__tga_test(s: *mut stbi__context) -> i32 {
 /*    let res: i32 = (i32)(0);
