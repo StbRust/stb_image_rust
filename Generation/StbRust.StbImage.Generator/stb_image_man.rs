@@ -1,7 +1,8 @@
 ﻿static stbi__g_failure_reason: &'static str = "";
 
+#[derive(Clone, Copy)]
 pub struct stbi_io_callbacks {
-	read: fn(*mut u8, *mut u8, i32) -> i32,
+	read: Option<fn(*mut u8, *mut i8, i32) -> i32>,
 	skip: fn(*mut u8, i32),
 	eof: fn(*mut u8) -> i32,
 }
@@ -79,9 +80,10 @@ unsafe fn stbi__tga_test(s: *mut stbi__context) -> i32 {
     errorEnd: ;
     stbi__rewind(s);
     return (i32)(res);*/
+    return 0;
 }
 
 pub fn stbi__err(s: &str) -> i32 {
-    stbi__g_failure_reason = s;
+//    stbi__g_failure_reason = s;
     return 0;
 }

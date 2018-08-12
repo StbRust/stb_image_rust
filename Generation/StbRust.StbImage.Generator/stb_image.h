@@ -933,7 +933,7 @@ static void *stbi__malloc_mad4(int a, int b, int c, int d, int add)
 #endif
 
 #define stbi__errpf(x,y)   ((float *)(size_t) (stbi__err(x,y)?NULL:NULL))
-#define stbi__errpuc(x,y)  stbi__err(x,y)?NULL:NULL
+#define stbi__errpuc(x,y)  (stbi__err(x,y) != 0?NULL:NULL)
 
 STBIDEF void stbi_image_free(void *retval_from_stbi_load)
 {
@@ -1362,11 +1362,14 @@ static void stbi__refill_buffer(stbi__context *s)
 
 stbi_inline static stbi_uc stbi__get8(stbi__context *s)
 {
-   if (s->img_buffer < s->img_buffer_end)
-      return *s->img_buffer++;
+	if (s->img_buffer < s->img_buffer_end) {
+		s->img_buffer++;
+		return *s->img_buffer;
+	}
    if (s->read_from_callbacks) {
       stbi__refill_buffer(s);
-      return *s->img_buffer++;
+	  s->img_buffer++;
+	  return *s->img_buffer;
    }
    return 0;
 }
@@ -3846,7 +3849,8 @@ typedef struct
 stbi_inline static stbi_uc stbi__zget8(stbi__zbuf *z)
 {
    if (z->zbuffer >= z->zbuffer_end) return 0;
-   return *z->zbuffer++;
+   z->zbuffer++;
+   return *z->zbuffer;
 }
 
 static void stbi__fill_bits(stbi__zbuf *z)
@@ -3944,7 +3948,9 @@ static int stbi__parse_huffman_block(stbi__zbuf *a)
             if (!stbi__zexpand(a, zout, 1)) return 0;
             zout = a->zout;
          }
-         *zout++ = (char) z;
+
+         *zout = (char) z;
+		 zout++;
       } else {
          stbi_uc *p;
          int len,dist;
@@ -3966,13 +3972,15 @@ static int stbi__parse_huffman_block(stbi__zbuf *a)
          }
          p = (stbi_uc *) (zout - dist);
          if (dist == 1) { // run of one byte; common in images.
-            stbi_uc v = *p;
-            if (len) { do *zout++ = v; while (--len); }
+            stbi_uc v = *p; 
+			if (len) { do { *zout = v; zout++; --len; } while (len); }
          } else {
-            if (len) { do *zout++ = *p++; while (--len); }
+			 if (len) { do { *zout = *p; zout++; p++; --len; } while (len); }
          }
       }
    }
+
+   return 0;
 }
 
 static const stbi_uc length_dezigzag[19] = { 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
@@ -4016,8 +4024,11 @@ static int stbi__compute_huffman_codes(stbi__zbuf *a)
    while (n < ntot) {
       int c = stbi__zhuffman_decode(a, &z_codelength);
       if (c < 0 || c >= 19) return stbi__err("bad codelengths", "Corrupt PNG");
-      if (c < 16)
-         lencodes[n++] = (stbi_uc) c;
+	  if (c < 16)
+	  {
+		  lencodes[n] = (stbi_uc)c;
+		  n++;
+	  }
       else {
          stbi_uc fill = 0;
          if (c == 16) {
@@ -4050,14 +4061,18 @@ static int stbi__parse_uncompressed_block(stbi__zbuf *a)
    // drain the bit-packed data into header
    k = 0;
    while (a->num_bits > 0) {
-      header[k++] = (stbi_uc) (a->code_buffer & 255); // suppress MSVC run-time check
+      header[k] = (stbi_uc) (a->code_buffer & 255); // suppress MSVC run-time check
+	  k++;
       a->code_buffer >>= 8;
       a->num_bits -= 8;
    }
    STBI_ASSERT(a->num_bits == 0);
    // now fill header the normal way
    while (k < 4)
-      header[k++] = stbi__zget8(a);
+   {
+	   header[k] = stbi__zget8(a);
+	   k++;
+   }
    len  = header[1] * 256 + header[0];
    nlen = header[3] * 256 + header[2];
    if (nlen != (len ^ 0xffff)) return stbi__err("zlib corrupt","Corrupt PNG");
@@ -4314,7 +4329,8 @@ static int stbi__create_png_image_raw(stbi__png *a, stbi_uc *raw, stbi__uint32 r
    for (j=0; j < y; ++j) {
       stbi_uc *cur = a->out + stride*j;
       stbi_uc *prior;
-      int filter = *raw++;
+      int filter = *raw;
+	  raw++;
 
       if (filter > 4)
          return stbi__err("invalid filter","Corrupt PNG");
@@ -4684,7 +4700,7 @@ static void stbi__de_iphone(stbi__png *z)
    }
 }
 
-#define STBI__PNG_TYPE(a,b,c,d)  (((a) << 24) + ((b) << 16) + ((c) << 8) + (d))
+#define STBI__PNG_TYPE(a,b,c,d)  ((((int)a) << 24) + (((int)b) << 16) + (((int)c) << 8) + ((int)d))
 
 static int stbi__parse_png_file(stbi__png *z, int scan, int req_comp)
 {
@@ -4840,11 +4856,7 @@ static int stbi__parse_png_file(stbi__png *z, int scan, int req_comp)
             // if critical, fail
             if (first) return stbi__err("first not IHDR", "Corrupt PNG");
             if ((c.type & (1 << 29)) == 0) {
-               #ifndef STBI_NO_FAILURE_STRINGS
-               // not threadsafe
-               static char invalid_chunk[] = "XXXX PNG chunk not known";
-               #endif
-               return stbi__err(invalid_chunk, "PNG not supported: unknown PNG chunk type");
+               return stbi__err("XXXX PNG chunk not known", "PNG not supported: unknown PNG chunk type");
             }
             stbi__skip(s, c.length);
             break;
@@ -4852,6 +4864,8 @@ static int stbi__parse_png_file(stbi__png *z, int scan, int req_comp)
       // end of PNG chunk, read and skip CRC
       stbi__get32be(s);
    }
+
+   return 0;
 }
 
 static void *stbi__do_png(stbi__png *p, int *x, int *y, int *n, int req_comp, stbi__result_info *ri)

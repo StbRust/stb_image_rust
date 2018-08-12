@@ -5,9 +5,9 @@
     "command": "cargo",
     "tasks": [
         {
-            "label": "run",
+            "label": "build",
             "args": [
-                "--release"
+//                "--debug"
             ],
             "showOutput": "always",
             "group": {
