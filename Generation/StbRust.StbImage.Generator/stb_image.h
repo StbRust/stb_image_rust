@@ -1363,13 +1363,15 @@ static void stbi__refill_buffer(stbi__context *s)
 stbi_inline static stbi_uc stbi__get8(stbi__context *s)
 {
 	if (s->img_buffer < s->img_buffer_end) {
+		stbi_uc res = *s->img_buffer;
 		s->img_buffer++;
-		return *s->img_buffer;
+		return res;
 	}
    if (s->read_from_callbacks) {
       stbi__refill_buffer(s);
+	  stbi_uc res = *s->img_buffer;
 	  s->img_buffer++;
-	  return *s->img_buffer;
+	  return res;
    }
    return 0;
 }
@@ -3849,8 +3851,9 @@ typedef struct
 stbi_inline static stbi_uc stbi__zget8(stbi__zbuf *z)
 {
    if (z->zbuffer >= z->zbuffer_end) return 0;
+   stbi_uc res = *z->zbuffer;
    z->zbuffer++;
-   return *z->zbuffer;
+   return res;
 }
 
 static void stbi__fill_bits(stbi__zbuf *z)

@@ -78,10 +78,10 @@ fn main() {
     let mut comp:i32 = 0;
 
     unsafe {
-        stb_image::stbi_info_from_memory(contents.as_mut_ptr(), contents.len() as i32,
-                                         &mut x, &mut y, &mut comp);
-/*        stb_image::stbi_load_from_memory(contents.as_mut_ptr(), contents.len() as i32,
-                                         &mut x, &mut y, &mut comp, stb_image::STBI_rgb_alpha);*/
+/*        stb_image::stbi_info_from_memory(contents.as_mut_ptr(), contents.len() as i32,
+                                         &mut x, &mut y, &mut comp);*/
+        stb_image::stbi_load_from_memory(contents.as_mut_ptr(), contents.len() as i32,
+                                         &mut x, &mut y, &mut comp, stb_image::STBI_rgb_alpha);
     }
 
     println!("X: {}, Y: {}, COMP: {}", x, y, comp);

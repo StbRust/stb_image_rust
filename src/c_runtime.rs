@@ -22,6 +22,10 @@ pub unsafe fn malloc(count: u64) -> *mut u8 {
 }
 
 pub unsafe fn realloc<T>(data:*mut T, count: u64) -> *mut u8 {
+    if (data == std::ptr::null_mut()) {
+        return malloc(count);
+    }
+
     let layout = std::alloc::Layout::from_size_align(count as usize, 1)
         .expect("Bad layout");
 
