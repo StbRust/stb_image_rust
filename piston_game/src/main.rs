@@ -1,14 +1,11 @@
 extern crate piston_window;
-extern crate stb_rust;
-extern crate image;
 
 use std::env;
 use std::time::{Duration, Instant};
 use std::fs::File;
 use std::io::prelude::*;
 use piston_window::*;
-use stb_rust::stb_image;
-use stb_rust::c_runtime;
+use stb_image::*;
 
 fn main() {
     let mut window: PistonWindow =
@@ -28,6 +25,7 @@ fn main() {
 
     let mut buffer: Vec<u8>;
     unsafe {
+
         let img = stb_image::stbi_load_from_memory(contents.as_mut_ptr(), contents.len() as i32,
                                                      &mut x, &mut y, &mut comp, stb_image::STBI_rgb_alpha);
         let size = x * y * 4;

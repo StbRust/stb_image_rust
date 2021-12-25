@@ -1,0 +1,10 @@
+[package]
+name = "piston_game"
+version = "0.1.0"
+
+[dependencies]
+piston_window = "0.80.0"
+
+[dependencies.stb_image]
+path = "../stb_image"
+package = "stb_image"

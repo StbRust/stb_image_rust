@@ -1,8 +1,5 @@
-[package]
-name = "stb_rust"
-version = "0.1.0"
-authors = ["Roman Shapiro <eleroman@mail.ru>"]
-
-[dependencies]
-piston_window = "0.80.0"
-image = "0.19.0"
+[workspace]
+members = [
+	"piston_game",
+	"stb_image"
+]

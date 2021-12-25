@@ -1,17 +1,48 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "lldb",
-            "preLaunchTask": "build",
-            "request": "launch",
-            "name": "Debug",
-            "program": "${workspaceRoot}/target/debug/stb_rust",
-            "args": [],
-            "cwd": "${workspaceRoot}/target/debug/"
-        }
-    ]
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "piston_game debug executable",
+			"cargo": {
+				"args": [
+					"build",
+					"--bin=piston_game",
+					"--package=piston_game",
+				],
+				"filter": {
+					"name": "piston_game",
+					"kind": "bin",
+				},
+			},
+			"args": [],
+			"cwd": "${workspaceFolder}",
+			"env": {
+				"RUST_LOG": "error",
+			},
+		},
+		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "Debug unit tests in executable 'piston_game'",
+			"cargo": {
+				"args": [
+					"test",
+					"--no-run",
+					"--bin=piston_game",
+					"--package=piston_game",
+				],
+				"filter": {
+					"name": "piston_game",
+					"kind": "bin",
+				},
+			},
+			"args": [],
+			"cwd": "${workspaceFolder}",
+		},
+	],
 }
