@@ -7,9 +7,10 @@ use std::time::{Duration, Instant};
 use std::fs::File;
 use std::io::prelude::*;
 use piston_window::*;
+use stb_image::*;
 
 fn main() {
-    let mut window: PistonWindow =
+/*    let mut window: PistonWindow =
         WindowSettings::new("Hello Piston!", [640, 480])
             .exit_on_esc(true).build().unwrap();
 
@@ -51,5 +52,12 @@ fn main() {
             clear([0.0; 4], graphics);
             image(&texture, context.transform, graphics);
         });
-    }
+    }*/
+
+    let mut g: stbi__gif = Default::default();
+
+    g.codes[2].prefix = 100;
+
+
+    println!("Hello, world!");
 }
