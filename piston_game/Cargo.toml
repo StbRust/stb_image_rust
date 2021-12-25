@@ -4,6 +4,7 @@ version = "0.1.0"
 
 [dependencies]
 piston_window = "0.80.0"
+image = "0.19.0"
 
 [dependencies.stb_image]
 path = "../stb_image"

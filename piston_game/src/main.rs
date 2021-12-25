@@ -1,11 +1,12 @@
 extern crate piston_window;
+extern crate image;
+extern crate stb_image;
 
 use std::env;
 use std::time::{Duration, Instant};
 use std::fs::File;
 use std::io::prelude::*;
 use piston_window::*;
-use stb_image::*;
 
 fn main() {
     let mut window: PistonWindow =
@@ -13,7 +14,7 @@ fn main() {
             .exit_on_esc(true).build().unwrap();
 
     // Load file into memory
-    let mut f = File::open("D:\\Temp\\mario.png").expect("file not found");
+    let mut f = File::open("D:\\Temp\\pipeline.png").expect("file not found");
 
     let mut contents = vec![];
     f.read_to_end(&mut contents);
@@ -25,16 +26,15 @@ fn main() {
 
     let mut buffer: Vec<u8>;
     unsafe {
-
-        let img = stb_image::stbi_load_from_memory(contents.as_mut_ptr(), contents.len() as i32,
-                                                     &mut x, &mut y, &mut comp, stb_image::STBI_rgb_alpha);
+        let img = stb_image::stb_image::stbi_load_from_memory(contents.as_mut_ptr(), contents.len() as i32,
+                                                     &mut x, &mut y, &mut comp, stb_image::stb_image::STBI_rgb_alpha);
         let size = x * y * 4;
         buffer = Vec::<u8>::with_capacity(size as usize);
         for i in 0..size {
             buffer.push(*img.offset(i as isize));
         }
 
-        c_runtime::free(img);
+        stb_image::c_runtime::free(img);
     }
 
     println!("X: {}, Y: {}, COMP: {}", x, y, comp);
