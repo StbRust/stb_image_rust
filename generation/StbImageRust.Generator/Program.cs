@@ -152,6 +152,7 @@ namespace StbSharp.StbImage.Generator
 					"STBI_NO_PNM",
 					"STBI_NO_STDIO",
 					"STB_IMAGE_IMPLEMENTATION",
+					"STBI_ONLY_BMP"
 				},
 				SkipStructs = new string[]
 				{
@@ -159,38 +160,12 @@ namespace StbSharp.StbImage.Generator
 				SkipGlobalVariables = new[]
 				{
 					"stbi__g_failure_reason",
-					"stbi__vertically_flip_on_load",
 					"stbi__parse_png_file_invalid_chunk",
 				},
 				SkipFunctions = new[]
 				{
 					"stbi_failure_reason",
-					"stbi_image_free",
 					"stbi__err",
-					"stbi_is_hdr_from_memory",
-					"stbi_is_hdr_from_callbacks",
-					"stbi__pnm_isspace",
-					"stbi__pnm_skip_whitespace",
-					"stbi__pic_is4",
-					"stbi__start_mem",
-					"stbi__start_callbacks",
-					"stbi__rewind",
-					"stbi_load_16_from_callbacks",
-					"stbi_load_from_callbacks",
-					"stbi__get8",
-					"stbi__refill_buffer",
-					"stbi__at_eof",
-					"stbi__skip",
-					"stbi__getn",
-					"stbi_load_16_from_memory",
-					"stbi_load_from_memory",
-					"stbi_load_gif_from_memory",
-					"stbi_info_from_memory",
-					"stbi_info_from_callbacks",
-					"stbi_is_16_bit_from_memory",
-					"stbi_is_16_bit_from_callbacks",
-					"stbi_loadf_from_memory",
-					"stbi_loadf_from_callbacks"
 				}
 			};
 

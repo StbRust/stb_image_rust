@@ -54,10 +54,9 @@ fn main() {
         });
     }*/
 
-    let mut g: stbi__gif = Default::default();
+    let mut g: stbi__bmp_data = Default::default();
 
-    g.codes[2].prefix = 100;
-
+    g.all_a = 5;
 
     println!("Hello, world!");
 }

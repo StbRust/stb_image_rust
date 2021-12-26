@@ -1567,13 +1567,6 @@ STBIDEF void   stbi_hdr_to_ldr_scale(float scale) { stbi__h2l_scale_i = 1/scale;
 // Common code used by all image loaders
 //
 
-enum testEnum
-{
-	A,
-	B = 10,
-	C
-};
-
 enum
 {
    STBI__SCAN_load=0,
@@ -4241,7 +4234,7 @@ static const int stbi__zlength_extra[31]=
 static const int stbi__zdist_base[32] = { 1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,
 257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577,0,0};
 
-static const int stbi__zdist_extra[32] =
+static const int stbi__zdist_extra[30] =
 { 0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13};
 
 static int stbi__parse_huffman_block(stbi__zbuf *a)
