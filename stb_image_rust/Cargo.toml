@@ -1,4 +1,8 @@
 [package]
 name = "stb_image_rust"
 version = "2.27.0"
-authors = ["Roman Shapiro <netframeworker@gmail.com>"]
+authors = ["StbRust Team"]
+description = "Rust port of the stb image"
+repository = "https://github.com/StbRust/stb_image_rust"
+keywords = ["image", "jpeg", "png", "bmp", "gif", "psd", "tga"]
+license = "Public Domain"
