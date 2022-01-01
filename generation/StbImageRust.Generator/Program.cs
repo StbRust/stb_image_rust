@@ -96,23 +96,23 @@ namespace StbSharp.StbImage.Generator
 
 				if (outputKey == null)
 				{
-					if (value.Contains("(stbi__jpeg "))
+					if (value.Contains(": *mut stbi__jpeg"))
 					{
 						outputKey = "jpg";
 					}
-					else if (value.Contains("(stbi__zbuf"))
+					else if (value.Contains(": *mut stbi__zbuf"))
 					{
 						outputKey = "zlib";
 					}
-					else if (value.Contains("(stbi__png "))
+					else if (value.Contains(": *mut stbi__png"))
 					{
 						outputKey = "png";
 					}
-					else if (value.Contains("(stbi__gif "))
+					else if (value.Contains(": *mut stbi__gif"))
 					{
 						outputKey = "gif";
 					}
-					else if (value.Contains("(stbi__hdr "))
+					else if (value.Contains(": *mut stbi__hdr"))
 					{
 						outputKey = "hdr";
 					}
@@ -150,9 +150,9 @@ namespace StbSharp.StbImage.Generator
 					"STBI_NO_SIMD",
 					"STBI_NO_PIC",
 					"STBI_NO_PNM",
+					"STBI_NO_HDR",
 					"STBI_NO_STDIO",
 					"STB_IMAGE_IMPLEMENTATION",
-					"STBI_ONLY_BMP"
 				},
 				SkipStructs = new string[]
 				{

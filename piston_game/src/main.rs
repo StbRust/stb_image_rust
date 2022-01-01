@@ -1,21 +1,22 @@
-extern crate piston_window;
 extern crate image;
+extern crate piston_window;
 extern crate stb_image;
 
-use std::env;
-use std::time::{Duration, Instant};
-use std::fs::File;
-use std::io::prelude::*;
 use piston_window::*;
 use stb_image::*;
+use std::env;
+use std::fs::File;
+use std::io::prelude::*;
+use std::time::{Duration, Instant};
 
 fn main() {
-/*    let mut window: PistonWindow =
-        WindowSettings::new("Hello Piston!", [640, 480])
-            .exit_on_esc(true).build().unwrap();
+    let mut window: PistonWindow = WindowSettings::new("Hello Piston!", [640, 480])
+        .exit_on_esc(true)
+        .build()
+        .unwrap();
 
     // Load file into memory
-    let mut f = File::open("D:\\Temp\\pipeline.png").expect("file not found");
+    let mut f = File::open("D:\\Temp\\CharacterControllerSample.jpg").expect("file not found");
 
     let mut contents = vec![];
     f.read_to_end(&mut contents);
@@ -27,8 +28,14 @@ fn main() {
 
     let mut buffer: Vec<u8>;
     unsafe {
-        let img = stb_image::stb_image::stbi_load_from_memory(contents.as_mut_ptr(), contents.len() as i32,
-                                                     &mut x, &mut y, &mut comp, stb_image::stb_image::STBI_rgb_alpha);
+        let img = stb_image::stbi_load_from_memory(
+            contents.as_mut_ptr(),
+            contents.len() as i32,
+            &mut x,
+            &mut y,
+            &mut comp,
+            stb_image::STBI_rgb_alpha,
+        );
         let size = x * y * 4;
         buffer = Vec::<u8>::with_capacity(size as usize);
         for i in 0..size {
@@ -42,21 +49,13 @@ fn main() {
 
     let image_buffer = image::RgbaImage::from_raw(x as u32, y as u32, buffer).unwrap();
 
-    let texture = Texture::from_image(&mut window.factory,
-                                             &image_buffer,
-                                             &TextureSettings::new()
-    ).unwrap();
+    let texture =
+        Texture::from_image(&mut window.factory, &image_buffer, &TextureSettings::new()).unwrap();
 
     while let Some(event) = window.next() {
         window.draw_2d(&event, |context, graphics| {
             clear([0.0; 4], graphics);
             image(&texture, context.transform, graphics);
         });
-    }*/
-
-    let mut g: stbi__bmp_data = Default::default();
-
-    g.all_a = 5;
-
-    println!("Hello, world!");
+    }
 }
