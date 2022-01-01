@@ -1,6 +1,5 @@
 [workspace]
 members = [
 	"stb_image_rust",
-	"piston_game",
 	"testing"
 ]

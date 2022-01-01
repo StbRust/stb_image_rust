@@ -6,6 +6,6 @@ version = "0.1.0"
 image = "0.23.14"
 stb_image = "0.2.3"
 
-[dependencies.stb_image]
-path = "../stb_image"
-package = "stb_image"
+[dependencies.stb_image_rust]
+path = "../stb_image_rust"
+package = "stb_image_rust"
