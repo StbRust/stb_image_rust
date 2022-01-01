@@ -5,4 +5,4 @@ authors = ["StbRust Team"]
 description = "Rust port of the stb_image"
 repository = "https://github.com/StbRust/stb_image_rust"
 keywords = ["image", "jpeg", "png", "bmp", "gif"]
-license = "Public Domain"
+license = "Unlicense"
