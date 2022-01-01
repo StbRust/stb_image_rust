@@ -7,15 +7,15 @@
 		{
 			"type": "lldb",
 			"request": "launch",
-			"name": "piston_game debug executable",
+			"name": "testing debug executable",
 			"cargo": {
 				"args": [
 					"build",
-					"--bin=piston_game",
-					"--package=piston_game",
+					"--bin=testing",
+					"--package=testing",
 				],
 				"filter": {
-					"name": "piston_game",
+					"name": "testing",
 					"kind": "bin",
 				},
 			},
@@ -28,16 +28,16 @@
 		{
 			"type": "lldb",
 			"request": "launch",
-			"name": "Debug unit tests in executable 'piston_game'",
+			"name": "Debug unit tests in executable 'testing'",
 			"cargo": {
 				"args": [
 					"test",
 					"--no-run",
-					"--bin=piston_game",
-					"--package=piston_game",
+					"--bin=testing",
+					"--package=testing",
 				],
 				"filter": {
-					"name": "piston_game",
+					"name": "testing",
 					"kind": "bin",
 				},
 			},

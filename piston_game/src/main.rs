@@ -3,11 +3,8 @@ extern crate piston_window;
 extern crate stb_image;
 
 use piston_window::*;
-use stb_image::*;
-use std::env;
 use std::fs::File;
 use std::io::prelude::*;
-use std::time::{Duration, Instant};
 
 fn main() {
     let mut window: PistonWindow = WindowSettings::new("Hello Piston!", [640, 480])
@@ -16,7 +13,7 @@ fn main() {
         .unwrap();
 
     // Load file into memory
-    let mut f = File::open("D:\\Temp\\CharacterControllerSample.jpg").expect("file not found");
+    let mut f = File::open(r"D:\Projects\Hebron\TestImages\head.tga").expect("file not found");
 
     let mut contents = vec![];
     f.read_to_end(&mut contents);

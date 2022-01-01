@@ -63,15 +63,11 @@ pub unsafe fn postDecPtr<T>(mut a: *mut *mut T) -> *mut T {
 }
 
 pub unsafe fn memcpy(src: *mut u8, dest: *mut u8, count: u64) {
-    for i in 0..count {
-        *src.offset(i as isize) = *dest.offset(i as isize);
-    }
+    std::ptr::copy_nonoverlapping(dest, src, count as usize);
 }
 
 pub unsafe fn memset(src: *mut u8, value: i32, count: u64) {
-    for i in 0..count {
-        *src.offset(i as isize) = value as u8;
-    }
+    std::ptr::write_bytes(src, value as u8, count as usize);
 }
 
 pub unsafe fn malloc(count: u64) -> *mut u8 {

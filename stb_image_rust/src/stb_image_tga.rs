@@ -9,28 +9,26 @@ pub unsafe fn stbi__tga_get_comp(
     mut is_grey: i32,
     mut is_rgb16: *mut i32,
 ) -> i32 {
-    /*     if (is_rgb16) != std::ptr::null_mut() {
+    if (is_rgb16) != std::ptr::null_mut() {
         *is_rgb16 = ((0) as i32);
     }
     {
         if bits_per_pixel == 8 {
             return ((STBI_grey) as i32);
-        } else if bits_per_pixel == 16 {
-            if is_grey != 0 {
+        } else if bits_per_pixel == 16 || bits_per_pixel == 15 {
+            if bits_per_pixel == 16 && is_grey != 0 {
                 return ((STBI_grey_alpha) as i32);
             }
-        } else if bits_per_pixel == 15 {
             if (is_rgb16) != std::ptr::null_mut() {
                 *is_rgb16 = ((1) as i32);
             }
             return ((STBI_rgb) as i32);
-        } else if bits_per_pixel == 24 {
-        } else if bits_per_pixel == 32 {
+        } else if bits_per_pixel == 24 || bits_per_pixel == 32 {
             return ((bits_per_pixel / 8) as i32);
         } else {
             return ((0) as i32);
         }
-    }*/
+    }
 
     return 0;
 }

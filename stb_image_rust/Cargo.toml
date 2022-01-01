@@ -1,4 +1,4 @@
 [package]
-name = "stb_image"
-version = "0.1.0"
+name = "stb_image_rust"
+version = "2.27.0"
 authors = ["Roman Shapiro <netframeworker@gmail.com>"]
