@@ -5,7 +5,10 @@ It is important to note, that this project is **port**, not **wrapper**. Origina
 
 The porting hasn't been done by hand, but using [Hebron](https://github.com/rds1983/Hebron).
 
-### Usage
+### Crate
+https://crates.io/crates/stb_image_rust
+
+### Sample Code
 ```
         let mut x: i32 = 0;
         let mut y: i32 = 0;
@@ -13,7 +16,7 @@ The porting hasn't been done by hand, but using [Hebron](https://github.com/rds1
 
         let img: *mut u8;
 		
-		// Load the image
+	// Load the image
         unsafe {
             img = stb_image_rust::stbi_load_from_memory(
                 contents.as_mut_ptr(),
@@ -25,10 +28,10 @@ The porting hasn't been done by hand, but using [Hebron](https://github.com/rds1
             );
         }
 		
-		// Do something with it
-		...
+	// Do something with it
+	...
 		
-		// Free the allocated memory
+	// Free the allocated memory
         unsafe {
             stb_image_rust::c_runtime::free(img);
         }		
