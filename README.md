@@ -10,13 +10,17 @@ https://crates.io/crates/stb_image_rust
 
 ### Sample Code
 ```
+        // Load file into memory
+        let mut f = File::open(path).expect("file not found");
+        let mut contents = vec![];
+        f.read_to_end(&mut contents);
+
+	// Load the image
         let mut x: i32 = 0;
         let mut y: i32 = 0;
         let mut comp: i32 = 0;
-
         let img: *mut u8;
 		
-	// Load the image
         unsafe {
             img = stb_image_rust::stbi_load_from_memory(
                 contents.as_mut_ptr(),
