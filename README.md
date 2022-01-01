@@ -1,5 +1,5 @@
 ### About
-stb_image_rust is Rust port of the famous C framework: [https://github.com/nothings/stb](https://github.com/nothings/stb)
+stb_image_rust is C# port of the stb_image.h, which is C library to load images in JPG, PNG, BMP, TGA, PSD and GIF formats.
 
 It is important to note, that this project is **port**, not **wrapper**. Original C code had been ported to Rust. Therefore stb_image_rust doesnt require any native binaries.
 
