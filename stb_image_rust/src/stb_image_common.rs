@@ -1259,9 +1259,9 @@ pub unsafe fn stbi__ldr_to_hdr(
         k = ((0) as i32);
         while (k < n) {
             *output.offset((i * comp + k) as isize) = ((c_runtime::pow(
-                (((((*data.offset((i * comp + k) as isize)) as i32) as f32) / 255.0f32) as f64),
-                ((stbi__l2h_gamma) as f64),
-            ) * ((stbi__l2h_scale) as f64))
+                (((((*data.offset((i * comp + k) as isize)) as i32) as f32) / 255.0f32) as f32),
+                ((stbi__l2h_gamma) as f32),
+            ) * ((stbi__l2h_scale) as f32))
                 as f32);
             c_runtime::preInc(&mut k);
         }
