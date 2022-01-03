@@ -100,6 +100,6 @@ pub fn abs(x: i32) -> i32 {
     return i32::abs(x);
 }
 
-pub fn pow(x: f64, p: f64) -> f64 {
-    return 0.0f64;
+pub fn pow(x: f32, p: f32) -> f32 {
+    return x.powf(p);
 }

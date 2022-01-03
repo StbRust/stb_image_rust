@@ -199,7 +199,7 @@ namespace StbSharp.StbImage.Generator
 				sb.AppendLine();
 				sb.Append(data);
 
-				File.WriteAllText(@"..\..\..\..\..\..\stb_image\src\stb_image_" + pair.Key + ".rs", sb.ToString());
+				File.WriteAllText(@"..\..\..\..\..\..\stb_image_rust\src\stb_image_" + pair.Key + ".rs", sb.ToString());
 			}
 		}
 
