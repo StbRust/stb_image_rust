@@ -62,7 +62,29 @@ pub unsafe fn postDecPtr<T>(mut a: *mut *mut T) -> *mut T {
     return result;
 }
 
-pub unsafe fn memcpy(src: *mut u8, dest: *mut u8, count: u64) {
+pub unsafe fn preIncConstPtr<T>(mut a: *mut *const T) -> *const T {
+    *a = (*a).offset(1);
+    return *a;
+}
+
+pub unsafe fn preDecConstPtr<T>(mut a: *mut *const T) -> *const T {
+    *a = (*a).offset(-1);
+    return *a;
+}
+
+pub unsafe fn postIncConstPtr<T>(mut a: *mut *const T) -> *const T {
+    let mut result: *const T = *a;
+    *a = (*a).offset(1);
+    return result;
+}
+
+pub unsafe fn postDecConstPtr<T>(mut a: *mut *const T) -> *const T {
+    let mut result: *const T = *a;
+    *a = (*a).offset(-1);
+    return result;
+}
+
+pub unsafe fn memcpy(src: *mut u8, dest: *const u8, count: u64) {
     std::ptr::copy_nonoverlapping(dest, src, count as usize);
 }
 

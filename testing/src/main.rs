@@ -53,7 +53,7 @@ fn main() {
         let img: *mut u8;
         unsafe {
             img = stb_image_rust::stbi_load_from_memory(
-                contents.as_mut_ptr(),
+                contents.as_ptr(),
                 contents.len() as i32,
                 &mut x,
                 &mut y,

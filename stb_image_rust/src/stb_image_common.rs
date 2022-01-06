@@ -563,10 +563,10 @@ pub struct stbi__context {
     pub buflen: i32,
     pub buffer_start: [u8; 128],
     pub callback_already_read: i32,
-    pub img_buffer: *mut u8,
-    pub img_buffer_end: *mut u8,
-    pub img_buffer_original: *mut u8,
-    pub img_buffer_original_end: *mut u8,
+    pub img_buffer: *const u8,
+    pub img_buffer_end: *const u8,
+    pub img_buffer_original: *const u8,
+    pub img_buffer_original_end: *const u8,
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -1127,11 +1127,11 @@ pub unsafe fn stbi__get32le(mut s: *mut stbi__context) -> u32 {
 
 pub unsafe fn stbi__get8(mut s: *mut stbi__context) -> u8 {
     if (*s).img_buffer < (*s).img_buffer_end {
-        return ((*c_runtime::postIncPtr(&mut (*s).img_buffer)) as u8);
+        return ((*c_runtime::postIncConstPtr(&mut (*s).img_buffer)) as u8);
     }
     if ((*s).read_from_callbacks) != 0 {
         stbi__refill_buffer(s);
-        return ((*c_runtime::postIncPtr(&mut (*s).img_buffer)) as u8);
+        return ((*c_runtime::postIncConstPtr(&mut (*s).img_buffer)) as u8);
     }
     return ((0) as u8);
 }
@@ -1538,7 +1538,7 @@ pub unsafe fn stbi__refill_buffer(mut s: *mut stbi__context) {
         (*s).read_from_callbacks = ((0) as i32);
         (*s).img_buffer = (*s).buffer_start.as_mut_ptr();
         (*s).img_buffer_end = ((*s).buffer_start.as_mut_ptr()).offset((1) as isize);
-        *(*s).img_buffer = ((0) as u8);
+        (*s).buffer_start[0] = 0;
     } else {
         (*s).img_buffer = (*s).buffer_start.as_mut_ptr();
         (*s).img_buffer_end = ((*s).buffer_start.as_mut_ptr()).offset((n) as isize);
@@ -1599,7 +1599,7 @@ pub unsafe fn stbi__start_callbacks(
     (*s).img_buffer_original_end = (*s).img_buffer_end;
 }
 
-pub unsafe fn stbi__start_mem(mut s: *mut stbi__context, mut buffer: *mut u8, mut len: i32) {
+pub unsafe fn stbi__start_mem(mut s: *mut stbi__context, mut buffer: *const u8, mut len: i32) {
     (*s).io.read = std::ptr::null_mut();
     (*s).read_from_callbacks = ((0) as i32);
     (*s).callback_already_read = ((0) as i32);
@@ -1704,7 +1704,7 @@ pub unsafe fn stbi_info_from_callbacks(
 }
 
 pub unsafe fn stbi_info_from_memory(
-    mut buffer: *mut u8,
+    mut buffer: *const u8,
     mut len: i32,
     mut x: *mut i32,
     mut y: *mut i32,
@@ -1728,7 +1728,7 @@ pub unsafe fn stbi_is_16_bit_from_callbacks(
     return ((stbi__is_16_main(((&mut s) as *mut stbi__context))) as i32);
 }
 
-pub unsafe fn stbi_is_16_bit_from_memory(mut buffer: *mut u8, mut len: i32) -> i32 {
+pub unsafe fn stbi_is_16_bit_from_memory(mut buffer: *const u8, mut len: i32) -> i32 {
     let mut s: stbi__context = stbi__context::default();
     stbi__start_mem(((&mut s) as *mut stbi__context), buffer, len);
     return ((stbi__is_16_main(((&mut s) as *mut stbi__context))) as i32);
@@ -1741,7 +1741,7 @@ pub unsafe fn stbi_is_hdr_from_callbacks(
     return ((0) as i32);
 }
 
-pub unsafe fn stbi_is_hdr_from_memory(mut buffer: *mut u8, mut len: i32) -> i32 {
+pub unsafe fn stbi_is_hdr_from_memory(mut buffer: *const u8, mut len: i32) -> i32 {
     return ((0) as i32);
 }
 
@@ -1777,7 +1777,7 @@ pub unsafe fn stbi_load_16_from_callbacks(
 }
 
 pub unsafe fn stbi_load_16_from_memory(
-    mut buffer: *mut u8,
+    mut buffer: *const u8,
     mut len: i32,
     mut x: *mut i32,
     mut y: *mut i32,
@@ -1813,7 +1813,7 @@ pub unsafe fn stbi_load_from_callbacks(
 }
 
 pub unsafe fn stbi_load_from_memory(
-    mut buffer: *mut u8,
+    mut buffer: *const u8,
     mut len: i32,
     mut x: *mut i32,
     mut y: *mut i32,
@@ -1826,7 +1826,7 @@ pub unsafe fn stbi_load_from_memory(
 }
 
 pub unsafe fn stbi_load_gif_from_memory(
-    mut buffer: *mut u8,
+    mut buffer: *const u8,
     mut len: i32,
     mut delays: *mut *mut i32,
     mut x: *mut i32,
@@ -1876,7 +1876,7 @@ pub unsafe fn stbi_loadf_from_callbacks(
 }
 
 pub unsafe fn stbi_loadf_from_memory(
-    mut buffer: *mut u8,
+    mut buffer: *const u8,
     mut len: i32,
     mut x: *mut i32,
     mut y: *mut i32,
